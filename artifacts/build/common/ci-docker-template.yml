@@ -1,0 +1,14 @@
+stages:
+  - stage: Docker
+    displayName: Docker Stage
+    dependsOn: Build
+    jobs:
+      - job: Docker
+        steps:
+          - bash: |
+              cd $(sourceDirectory)
+              docker build \
+                  -t $(projectName) \
+                  .
+            failOnStderr: true
+            displayName: "docker build"

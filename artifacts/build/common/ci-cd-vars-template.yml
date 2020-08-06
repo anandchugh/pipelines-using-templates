@@ -1,0 +1,26 @@
+parameters:
+  - name: projectName
+    displayName: Project Name
+    type: string
+    default: any
+  - name: projectVersion
+    displayName: Project Version
+    type: string
+    default: any
+  - name: sourceDirectory
+    displayName: Source Directory
+    type: string
+    default: any
+
+variables:
+  - name: enableUnitTestCoverage
+    value: "true"
+  - name: enableCredscan
+    value: "true"
+
+  - name: projectName
+    value: ${{ parameters.projectName }}
+  - name: sourceDirectory
+    value: ${{ parameters.sourceDirectory }}
+  - name: codeCoverageThreshold
+    value: 70

@@ -1,0 +1,8 @@
+steps:
+  - task: BuildQualityChecks@6
+    displayName: "Code coverage check"
+    inputs:
+      checkCoverage: true
+      coverageFailOption: "fixed"
+      coverageType: "lines"
+      coverageThreshold: $(CodeCoverageThreshold)

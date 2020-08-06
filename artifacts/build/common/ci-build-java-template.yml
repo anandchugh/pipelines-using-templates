@@ -1,0 +1,16 @@
+stages:
+  - stage: Build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        steps:
+          - task: Maven@3
+            displayName: Maven Build and Test
+            inputs:
+              mavenPomFile: "$(System.DefaultWorkingDirectory)/$(sourceDirectory)/pom.xml"
+              goals: "package"
+              testResultsFiles: "**/surefire-reports/TEST-*.xml"
+              publishJUnitResults: true
+              codeCoverageToolOption: JaCoCo
+
+          - template: ./ci-coverage-check-task-template.yml

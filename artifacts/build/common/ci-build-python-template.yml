@@ -1,0 +1,75 @@
+parameters:
+  - name: PythonPath
+    displayName: Pythonpath env variable
+    type: string
+  - name: SourcesDirForCoverage
+    displayName: Sources directory for coverage
+    type: string
+  - name: UnitTestsDir
+    displayName: Unit tests directory
+    type: string
+
+stages:
+  - stage: Build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.6"
+
+          - bash: |
+              python -m pip install --upgrade pip
+              pip install pylint coverage
+            displayName: "Install pip packages."
+            workingDirectory: $(sourceDirectory)
+
+          - bash: |
+              pip install -r requirements.txt
+            displayName: "Install dependencies"
+            workingDirectory: $(sourceDirectory)
+
+          - bash: |
+              export PYTHONPATH=${{parameters.PythonPath}}
+              pip install pylint_runner
+              pylint_runner
+            displayName: "Run lint tests"
+            workingDirectory: $(sourceDirectory)
+            continueOnError: true
+
+          - bash: |
+              export PYTHONPATH=${{parameters.PythonPath}}
+              pip install unittest-xml-reporting
+              python -m xmlrunner discover -s ${{parameters.UnitTestsDir}} -o ./test-reports
+            displayName: "Run Unit Tests"
+            workingDirectory: $(sourceDirectory)
+            continueOnError: true
+
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFiles: "$(sourceDirectory)/test-reports/TEST-*.xml"
+              testRunTitle: "Publish test results"
+              failTaskOnFailedTests: true
+            displayName: "Publish Unit Tests"
+
+          - bash: |
+              export PYTHONPATH=${{parameters.PythonPath}}
+              coverage run --source=${{parameters.SourcesDirForCoverage}} -m unittest discover -s ${{parameters.UnitTestsDir}}
+            displayName: "Run code coverage"
+            workingDirectory: $(sourceDirectory)
+            continueOnError: true
+
+          - script: |
+              coverage report -m 
+              coverage xml
+            displayName: "Generate coverage"
+            workingDirectory: $(sourceDirectory)
+
+          - task: PublishCodeCoverageResults@1
+            displayName: "Publish Coverage"
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(sourceDirectory)/coverage.xml"
+
+          - template: ./ci-coverage-check-task-template.yml

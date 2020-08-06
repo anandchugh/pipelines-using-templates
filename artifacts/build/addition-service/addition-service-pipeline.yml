@@ -1,0 +1,23 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+      - addition-service/*
+
+variables:
+  - template: ../common/ci-cd-vars-template.yml
+    parameters:
+      projectName: "addition-service"
+      projectVersion: "1.0.0"
+      sourceDirectory: "addition-service"
+
+stages:
+  - template: ../common/ci-build-python-template.yml
+    parameters:
+      PythonPath: "./"
+      SourcesDirForCoverage: "./"
+      UnitTestsDir: "./tests/"
+  - template: ../common/ci-docker-template.yml
