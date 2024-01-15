@@ -1,4 +1,5 @@
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/{owner}/{repo}/badge)](https://securityscorecards.dev/viewer/?uri=github.com/{owner}/{repo})
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/anandchugh/pipelines-using-templates
+/badge)](https://securityscorecards.dev/viewer/?uri=github.com/anandchugh/pipelines-using-templates)
 
 # pipelines-using-templates
 CI/CD pipelines using templates
